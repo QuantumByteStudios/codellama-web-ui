@@ -3,4 +3,4 @@
 Prompt: `validate email in python`
 
 Output
-![codellama-web-ui](https://github.com/QuantumByteStudios/codellama-web-ui/assets/81068582/6efd5042-b1fa-4de1-a4b3-38ab055d2994)
+![Screenshot from 2024-03-27 02-07-31](https://github.com/QuantumByteStudios/codellama-web-ui/assets/81068582/fb94db5d-7e04-4ade-abaf-4f5d1b2c0801)
