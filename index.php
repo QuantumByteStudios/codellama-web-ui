@@ -19,39 +19,62 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <!-- Prism CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css">
-    <!-- Inline CSS -->
-    <style>
-        body {
-            font-family: 'Quicksand', sans-serif;
-        }
-
-        input {
-            box-shadow: none !important;
-        }
-    </style>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" href="https://ollama.com/public/icon-32x32.png">
 </head>
 
 <body>
 
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href=".">
+                <h2><b>codellama-web-ui</b></h2>
+            </a>
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a target="_blank" class="btn btn-dark"
+                        href="https://github.com/QuantumByteStudios/codellama-web-ui">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Navbar -->
+
     <div class="container d-flex align-items-center justify-content-center">
         <!-- Content -->
-        <div class="card mt-5 p-5 animate__animated animate__fadeIn w-50">
+        <div class="mt-5 p-5 animate__animated animate__fadeIn w-100">
             <!-- Input -->
-            <div class="alert m-3">
-                <h2>Ask Codellama</h2>
+            <div class="alert bg-dark fixed-bottom m-3">
                 <form action="" method="POST">
                     <div class="btn-group w-100">
-                        <input class="form-control rounded-0 rounded-start" type="text" name="prompt"
-                            autocomplete="off">
-                        <button class="btn btn-danger rounded-end" type="submit">Submit</button>
+                        <input class="form-control fs-4 bg-transparent text-white rounded-0 rounded-start" type="text"
+                            name="prompt" placeholder="Ask me something..." autocomplete="off">
+                        <button class="btn btn-light rounded-end" type="submit">
+                            <img width="30px" class="img-fluid" src="https://ollama.com/public/ollama.png" alt="">
+                            Submit
+                        </button>
                     </div>
                 </form>
             </div>
             <!-- Output -->
-            <div class="alert m-3">
-                <h2>Output</h2>
+            <div class="alert">
                 <p>
                     <?php
+
+                    $default = '
+                    <div class="d-flex align-items-center">
+                        <span><img width="30px" class="img-fluid" src="https://ollama.com/public/ollama.png" alt=""></span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span>Say something to the Codellama!</span>
+                    </div>
+                    ';
 
                     function printFormattedText($text)
                     {
@@ -64,13 +87,18 @@
                     function askCodeLlama($prompt)
                     {
                         if (empty($prompt)) {
-                            echo 'No prompt provided';
+                            global $default;
+                            echo $default;
                             exit;
                         } else {
                             // GET THE OUTPUT FROM THE SHELL COMMAND
                             $command = 'ollama run codellama "' . $prompt . '"';
                             $output = shell_exec($command);
 
+                            // DEBUGGING
+                            //echo $output; // Output the raw output
+                            //$output = 'To make a "Hello, World!" program in C, you can use the following code: ``` #include int main() { printf("Hello, World!\n"); return 0; } ``` This program will print the string "Hello, World!" to the screen when it is run. The `printf` function is used to print a string to the console. The `%s` format specifier is used to tell `printf` that the next argument is a string. In this case, the next argument is the string "Hello, World!". The `return 0;` statement at the end of the `main` function is optional and is included to ensure that the program exits cleanly. If you omit it, the program will continue to run until the user presses Ctrl+C or Ctrl+Z to stop it. To compile this program, you can use a C compiler such as GCC. On Linux or macOS, you can use the following command: ``` gcc hello-world.c -o hello-world ``` This will create an executable file called `hello-world` that can be run using `./hello-world`. On Windows, you can use a similar command but with a different extension: ``` gcc hello-world.c -o hello-world.exe ``` You can then run the program by typing `./hello-world` or `hello-world.exe` in the terminal.';
+                    
                             // STAGE ONE FORMATTING - Replace new lines with <br> tags and remove backslashes
                             $new = nl2br($output);
                             $stage_one_formatting = str_replace('\n', '<br>', $new);
@@ -84,9 +112,11 @@
 
                     if (isset($_POST['prompt'])) {
                         $prompt = $_POST['prompt'];
+                        echo "<b>You</b> " . $prompt . "<br><br> <b>Codellama</b> ";
                         askCodeLlama($prompt);
+                        echo "<br><br><br>";
                     } else {
-                        echo "No prompt provided";
+                        echo $default;
                     }
                     ?>
                 </p>
@@ -104,9 +134,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        Prism.highlightAll();
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    Prism.highlightAll();
+});
 </script>
 
 </html>
