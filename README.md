@@ -1,4 +1,5 @@
 # codellama-web-ui
+Codellama Web UI is a user interface for interacting with the Ollama model, known as Codellama. It provides a straightforward interface where users can input their questions or prompts, and Codellama generates responses based on its trained model.
 
 Prompt: `hello world in c++`
 
