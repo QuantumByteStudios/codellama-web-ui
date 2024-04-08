@@ -63,6 +63,12 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Notifications -->
+            <div style="position: fixed; bottom: 15%; right: 1%; z-index: 1;" class="row">
+                <div class="" id="alert"></div>
+            </div>
+
             <!-- Output -->
             <div class="alert">
                 <p>
@@ -80,7 +86,7 @@
                     {
                         preg_match('/```(.*?)```/s', $text, $matches);
                         $code = isset($matches[1]) ? $matches[1] : '';
-                        $text = preg_replace('/```(.*?)```/s', '<div id="code"><pre><code class="language-javascript">' . $code . '</code></pre></div>', $text);
+                        $text = preg_replace('/```(.*?)```/s', '<div id="code"><pre><code class="language-javascript">' . $code . '</code></pre></div><button class="btn btn-outline-secondary mt-1 mb-3 btn-sm" onclick="copyToClipboard()"><i class="fa-solid fa-copy"></i> Code</button><br>', $text);
                         return $text;
                     }
 
@@ -137,6 +143,47 @@
 document.addEventListener('DOMContentLoaded', function() {
     Prism.highlightAll();
 });
+
+function showAlert(message, alertType) {
+    var alert = document.getElementById('alert');
+    alert.innerHTML = '<div style="border: 1px solid grey;" class="animate__animated animate__bounceInUp alert alert-' +
+        alertType +
+        ' alert-dismissible fade show" role="alert">' +
+        message +
+        '<button type="button" class="mx-2 btn btn-sm btn-dark" data-bs-dismiss="alert" aria-label="Close">Ok</button></div>';
+
+    setTimeout(function() {
+        alert.innerHTML = '';
+    }, 4000);
+
+    return;
+}
+
+function copyToClipboard() {
+    var text = document.getElementById("code").innerText;
+
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = "500";
+    textArea.style.left = "500";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        showAlert("Code copied to clipboard", "light");
+    } catch (err) {
+        showAlert("Unable to copy code to clipboard. Please try again.", "danger");
+    }
+
+    document.body.removeChild(textArea);
+}
 </script>
 
 </html>

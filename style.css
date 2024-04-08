@@ -8,6 +8,11 @@ input {
     border: 1px solid #ccc !important;
 }
 
+button {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
 p {
     font-size: larger;
 }
