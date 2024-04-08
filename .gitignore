@@ -1,5 +1,4 @@
 .vscode/
 DEBUG.php
 FORMAT.php
-CPU.py
-codellama.py
+*.py

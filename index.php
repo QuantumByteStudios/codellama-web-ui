@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Ask Codellama</title>
-    <meta name="description" content="">
-    <meta name="keywords" content="">
+    <meta name="description" content="codellama-web-ui">
+    <meta name="keywords" content="codellama-web-ui">
     <meta name="author" content="QuantumByteStudios">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap 5 Stylesheet -->
