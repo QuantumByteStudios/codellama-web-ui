@@ -117,7 +117,7 @@
                     }
 
                     if (isset($_POST['prompt'])) {
-                        $prompt = $_POST['prompt'];
+                        $prompt = isset($_POST['prompt']) ? htmlspecialchars($_POST['prompt']) : '';
                         echo "<b>You</b> " . $prompt . "<br><br> <b>Codellama</b> ";
                         askCodeLlama($prompt);
                         echo "<br><br><br>";
@@ -144,13 +144,23 @@ document.addEventListener('DOMContentLoaded', function() {
     Prism.highlightAll();
 });
 
+//client-side validation
+document.querySelector('form').addEventListener('submit', function(event) {
+    var promptInput = document.querySelector('input[name="prompt"]');
+    if (!promptInput.value.trim()) {
+        event.preventDefault();
+        showAlert('Please enter a prompt.', 'danger');
+    }
+});
+
+
 function showAlert(message, alertType) {
     var alert = document.getElementById('alert');
     alert.innerHTML = '<div style="border: 1px solid grey;" class="animate__animated animate__bounceInUp alert alert-' +
         alertType +
         ' alert-dismissible fade show" role="alert">' +
         message +
-        '<button type="button" class="mx-2 btn btn-sm btn-dark" data-bs-dismiss="alert" aria-label="Close">Ok</button></div>';
+        '<button aria-label="Close" type="button" class="mx-2 btn btn-sm btn-dark" data-bs-dismiss="alert">Ok</button> </div> ';
 
     setTimeout(function() {
         alert.innerHTML = '';
