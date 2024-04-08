@@ -12,3 +12,50 @@ Using your local
 <p align="center">
 <img src="https://github.com/QuantumByteStudios/codellama-web-ui/assets/81068582/7bf4184d-e39a-4f13-9a4b-3b95c69d3d69">
 </p>
+
+## Features
+
+- Submit prompts and receive responses from Codellama.
+- View formatted responses with highlighted code blocks.
+- Copy code snippets to the clipboard for easy sharing.
+
+## Installation
+
+To run Ask Codellama locally, follow these steps:
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/QuantumByteStudios/codellama-web-ui.git
+    ```
+
+2. Navigate to the project directory:
+
+    ```bash
+    cd codellama-web-ui
+    ```
+
+3.  Run the run.sh script to start the application:
+
+    ```bash
+    ./run.sh
+    ```
+
+This will start the web server and launch the Ask Codellama interface in your default web browser.
+
+
+## Usage
+
+1. Open the Ask Codellama interface in your web browser.
+2. Enter a prompt or question in the input field.
+3. Click the "Submit" button to receive a response from Codellama.
+4. View the formatted response, including highlighted code blocks.
+5. Optionally, copy code snippets to the clipboard for sharing or further use.
+
+## Contributing
+
+Contributions to Ask Codellama are welcome! If you have suggestions for improvements or would like to report a bug, please [create an issue](https://github.com/QuantumByteStudios/codellama-web-ui/issues) in the GitHub repository.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
