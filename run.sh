@@ -5,6 +5,19 @@ log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
 }
 
+# Function to clean up and exit
+cleanup() {
+    log "INFO: Cleaning up and exiting..."
+    # Kill the PHP development server process if it's running
+    if [[ -n "$server_pid" ]]; then
+        kill "$server_pid"
+    fi
+    exit 0
+}
+
+# Trap SIGINT signal (Ctrl+C) and call the cleanup function
+trap cleanup SIGINT
+
 # Check if PHP is installed
 if ! command -v php &>/dev/null; then
     log "ERROR: PHP is not installed. Please install PHP before running this script."
@@ -38,9 +51,11 @@ fi
 # Clear the terminal screen
 clear
 
-# Start the PHP development server
+# Start the PHP development server in the background
 log "INFO: Starting PHP development server..."
 php -S localhost:8000 &
+# Store the process ID (PID) of the server
+server_pid=$!
 
 # Log the server start
 log "INFO: PHP development server started on http://localhost:8000"
@@ -53,3 +68,6 @@ Linux) xdg-open http://localhost:8000 ;;
 CYGWIN* | MINGW32* | MSYS* | MINGW*) start http://localhost:8000 ;;
 *) log "ERROR: Unsupported operating system." ;;
 esac
+
+# Wait for the PHP development server process to finish
+wait "$server_pid"
