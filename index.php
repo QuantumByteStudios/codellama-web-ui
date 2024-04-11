@@ -37,7 +37,13 @@
 
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a target="_blank" class="btn btn-dark"
+                    <a target="_blank" class="btn btn-dark m-1" data-bs-toggle="modal"
+                        data-bs-target="#listModelsModal">
+                        <i class="fa-regular fa-rectangle-list"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a target="_blank" class="btn btn-dark m-1"
                         href="https://github.com/QuantumByteStudios/codellama-web-ui">
                         <i class="fa-brands fa-github"></i>
                     </a>
@@ -46,6 +52,34 @@
         </div>
     </nav>
     <!-- Navbar -->
+
+    <!-- list installed models -->
+    <!-- Modal -->
+    <div class="modal fade" id="listModelsModal" tabindex="-1" aria-labelledby="listModelsModalLabel" aria-hidden="true"
+        style="--bs-modal-width: 700px !important;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="listModelsModalLabel">
+                        List of Installed Models
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <?php
+                        $listInstalledModels = 'ollama list';
+                        $ResultListInstalledModels = shell_exec($listInstalledModels);
+                        echo "<pre class='m-0'>{$ResultListInstalledModels}</pre><br>";
+                        ?>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- list installed models -->
 
     <div class="container d-flex align-items-center justify-content-center">
         <!-- Content -->
@@ -97,6 +131,7 @@
                             echo $default;
                             exit;
                         } else {
+
                             // GET THE OUTPUT FROM THE SHELL COMMAND
                             $command = 'ollama run codellama "' . $prompt . '"';
                             $output = shell_exec($command);
@@ -140,60 +175,60 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    Prism.highlightAll();
-});
+    document.addEventListener('DOMContentLoaded', function () {
+        Prism.highlightAll();
+    });
 
-//client-side validation
-document.querySelector('form').addEventListener('submit', function(event) {
-    var promptInput = document.querySelector('input[name="prompt"]');
-    if (!promptInput.value.trim()) {
-        event.preventDefault();
-        showAlert('Please enter a prompt.', 'danger');
-    }
-});
+    //client-side validation
+    document.querySelector('form').addEventListener('submit', function (event) {
+        var promptInput = document.querySelector('input[name="prompt"]');
+        if (!promptInput.value.trim()) {
+            event.preventDefault();
+            showAlert('Please enter a prompt.', 'danger');
+        }
+    });
 
 
-function showAlert(message, alertType) {
-    var alert = document.getElementById('alert');
-    alert.innerHTML = '<div style="border: 1px solid grey;" class="animate__animated animate__bounceInUp alert alert-' +
-        alertType +
-        ' alert-dismissible fade show" role="alert">' +
-        message +
-        '<button aria-label="Close" type="button" class="mx-2 btn btn-sm btn-dark" data-bs-dismiss="alert">Ok</button> </div> ';
+    function showAlert(message, alertType) {
+        var alert = document.getElementById('alert');
+        alert.innerHTML = '<div style="border: 1px solid grey;" class="animate__animated animate__bounceInUp alert alert-' +
+            alertType +
+            ' alert-dismissible fade show" role="alert">' +
+            message +
+            '<button aria-label="Close" type="button" class="mx-2 btn btn-sm btn-dark" data-bs-dismiss="alert">Okay</button> </div> ';
 
-    setTimeout(function() {
-        alert.innerHTML = '';
-    }, 4000);
+        setTimeout(function () {
+            alert.innerHTML = '';
+        }, 4000);
 
-    return;
-}
-
-function copyToClipboard() {
-    var text = document.getElementById("code").innerText;
-
-    var textArea = document.createElement("textarea");
-    textArea.value = text;
-
-    // Avoid scrolling to bottom
-    textArea.style.top = "500";
-    textArea.style.left = "500";
-    textArea.style.position = "fixed";
-
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-        var successful = document.execCommand('copy');
-        var msg = successful ? 'successful' : 'unsuccessful';
-        showAlert("Code copied to clipboard", "light");
-    } catch (err) {
-        showAlert("Unable to copy code to clipboard. Please try again.", "danger");
+        return;
     }
 
-    document.body.removeChild(textArea);
-}
+    function copyToClipboard() {
+        var text = document.getElementById("code").innerText;
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+
+        // Avoid scrolling to bottom
+        textArea.style.top = "500";
+        textArea.style.left = "500";
+        textArea.style.position = "fixed";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            showAlert("Code copied to clipboard", "light");
+        } catch (err) {
+            showAlert("Unable to copy code to clipboard. Please try again.", "danger");
+        }
+
+        document.body.removeChild(textArea);
+    }
 </script>
 
 </html>
