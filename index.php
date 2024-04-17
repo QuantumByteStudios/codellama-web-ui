@@ -5,8 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Ask Codellama</title>
-    <meta name="description" content="codellama-web-ui">
-    <meta name="keywords" content="codellama-web-ui">
+    <meta name="description"
+        content="Codellama Web UI is a user interface for interacting with the Ollama model, known as Codellama. It provides a straightforward interface where users can input their questions or prompts, and Codellama generates responses based on its trained model.">
+    <meta name="keywords" content="Ollama, Codellama, Web-UI, LLM">
     <meta name="author" content="QuantumByteStudios">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap 5 Stylesheet -->
@@ -81,22 +82,9 @@
     </div>
     <!-- list installed models -->
 
-    <div class="container d-flex align-items-center justify-content-center">
+    <div style="height: 90vh;" class="container d-flex align-items-center justify-content-center">
         <!-- Content -->
-        <div class="mt-5 p-5 animate__animated animate__fadeIn w-100">
-            <!-- Input -->
-            <div class="alert bg-dark fixed-bottom m-3">
-                <form action="" method="POST">
-                    <div class="btn-group w-100">
-                        <input class="form-control fs-4 bg-transparent text-white rounded-0 rounded-start" type="text"
-                            name="prompt" placeholder="Ask me something..." autocomplete="off">
-                        <button class="btn btn-light rounded-end" type="submit">
-                            <img width="30px" class="img-fluid" src="https://ollama.com/public/ollama.png" alt="">
-                            Submit
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <div class="animate__animated animate__fadeIn w-100 p-sm-0 p-md-5 p-lg-5">
 
             <!-- Notifications -->
             <div style="position: fixed; bottom: 15%; right: 1%; z-index: 1;" class="row">
@@ -105,7 +93,7 @@
 
             <!-- Output -->
             <div class="alert">
-                <p>
+                <p id="conversation">
                     <?php
 
                     $default = '
@@ -137,8 +125,17 @@
                             $output = shell_exec($command);
 
                             // DEBUGGING
-                            //echo $output; // Output the raw output
-                            //$output = 'To make a "Hello, World!" program in C, you can use the following code: ``` #include int main() { printf("Hello, World!\n"); return 0; } ``` This program will print the string "Hello, World!" to the screen when it is run. The `printf` function is used to print a string to the console. The `%s` format specifier is used to tell `printf` that the next argument is a string. In this case, the next argument is the string "Hello, World!". The `return 0;` statement at the end of the `main` function is optional and is included to ensure that the program exits cleanly. If you omit it, the program will continue to run until the user presses Ctrl+C or Ctrl+Z to stop it. To compile this program, you can use a C compiler such as GCC. On Linux or macOS, you can use the following command: ``` gcc hello-world.c -o hello-world ``` This will create an executable file called `hello-world` that can be run using `./hello-world`. On Windows, you can use a similar command but with a different extension: ``` gcc hello-world.c -o hello-world.exe ``` You can then run the program by typing `./hello-world` or `hello-world.exe` in the terminal.';
+                            //echo "<pre>{$output}</pre>"; // Output the raw output
+//                             $output = '
+// ```
+// # Print a multiplication table of 10x10
+//                             for i in range(1, 11):
+//     for j in range(1, 11):
+//         print(i * j, end=" ")
+//     print()
+// ```
+// This script will print a multiplication table of 10x10. The `range` function is used to generate numbers from 1 to 10. The nested loop iterates over the numbers in each row and column, multiplying them together and printing the result. The `end=" "` argument is used to prevent the script from adding a newline character after each number, allowing the table to be printed on one line.
+//                             ';
                     
                             // STAGE ONE FORMATTING - Replace new lines with <br> tags and remove backslashes
                             $new = nl2br($output);
@@ -147,21 +144,51 @@
                     
                             // STAGE TWO FORMATTING - Highlight the code block
                             $stage_two_formatting = $stage_one_formatting;
-                            echo printFormattedText($stage_two_formatting);
+                            return printFormattedText($stage_two_formatting);
                         }
                     }
 
                     if (isset($_POST['prompt'])) {
                         $prompt = isset($_POST['prompt']) ? htmlspecialchars($_POST['prompt']) : '';
-                        echo "<b>You</b> " . $prompt . "<br><br> <b>Codellama</b> ";
-                        askCodeLlama($prompt);
+                        $response = askCodeLlama($prompt);
+
+                        $conversation = "
+                        <div class='row'>
+                            <span class='p-0'><b>You:</b> {$prompt}</span>
+                        </div>
+                        <br>
+                        <div class='row'>
+                            <span class='p-0'><b>Codellama:</b> {$response}</span>
+                        </div>
+                        ";
+
+                        echo $conversation;
+
                         echo "<br><br><br>";
                     } else {
                         echo $default;
                     }
+
                     ?>
                 </p>
             </div>
+
+            <!-- Input Box -->
+            <div style="position: fixed; right: 16%; left: 16%; bottom: 1%; width: auto; z-index: 1;"
+                class="alert bg-dark">
+                <form action="" method="POST">
+                    <div class="btn-group w-100">
+                        <input class="form-control fs-4 bg-transparent text-white rounded-0 rounded-start" type="text"
+                            name="prompt" placeholder="Ask me something..." autocomplete="off">
+                        <button class="btn btn-light rounded-end" type="submit">
+                            <img width="30px" class="img-fluid" src="https://ollama.com/public/ollama.png" alt="">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <!-- Input Box -->
+
         </div>
         <!-- Content -->
     </div>
@@ -175,60 +202,60 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        Prism.highlightAll();
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    Prism.highlightAll();
+});
 
-    //client-side validation
-    document.querySelector('form').addEventListener('submit', function (event) {
-        var promptInput = document.querySelector('input[name="prompt"]');
-        if (!promptInput.value.trim()) {
-            event.preventDefault();
-            showAlert('Please enter a prompt.', 'danger');
-        }
-    });
+//client-side validation
+document.querySelector('form').addEventListener('submit', function(event) {
+    var promptInput = document.querySelector('input[name="prompt"]');
+    if (!promptInput.value.trim()) {
+        event.preventDefault();
+        showAlert('Please enter a prompt.', 'danger');
+    }
+});
 
 
-    function showAlert(message, alertType) {
-        var alert = document.getElementById('alert');
-        alert.innerHTML = '<div style="border: 1px solid grey;" class="animate__animated animate__bounceInUp alert alert-' +
-            alertType +
-            ' alert-dismissible fade show" role="alert">' +
-            message +
-            '<button aria-label="Close" type="button" class="mx-2 btn btn-sm btn-dark" data-bs-dismiss="alert">Okay</button> </div> ';
+function showAlert(message, alertType) {
+    var alert = document.getElementById('alert');
+    alert.innerHTML = '<div style="border: 1px solid grey;" class="animate__animated animate__bounceInUp alert alert-' +
+        alertType +
+        ' alert-dismissible fade show" role="alert">' +
+        message +
+        '<button aria-label="Close" type="button" class="mx-2 btn btn-sm btn-dark" data-bs-dismiss="alert">Okay</button> </div> ';
 
-        setTimeout(function () {
-            alert.innerHTML = '';
-        }, 4000);
+    setTimeout(function() {
+        alert.innerHTML = '';
+    }, 4000);
 
-        return;
+    return;
+}
+
+function copyToClipboard() {
+    var text = document.getElementById("code").innerText;
+
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = "500";
+    textArea.style.left = "500";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        showAlert("Code copied to clipboard", "light");
+    } catch (err) {
+        showAlert("Unable to copy code to clipboard. Please try again.", "danger");
     }
 
-    function copyToClipboard() {
-        var text = document.getElementById("code").innerText;
-
-        var textArea = document.createElement("textarea");
-        textArea.value = text;
-
-        // Avoid scrolling to bottom
-        textArea.style.top = "500";
-        textArea.style.left = "500";
-        textArea.style.position = "fixed";
-
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-
-        try {
-            var successful = document.execCommand('copy');
-            var msg = successful ? 'successful' : 'unsuccessful';
-            showAlert("Code copied to clipboard", "light");
-        } catch (err) {
-            showAlert("Unable to copy code to clipboard. Please try again.", "danger");
-        }
-
-        document.body.removeChild(textArea);
-    }
+    document.body.removeChild(textArea);
+}
 </script>
 
 </html>
