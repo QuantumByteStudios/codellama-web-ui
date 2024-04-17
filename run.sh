@@ -8,9 +8,10 @@ log() {
 # Function to clean up and exit
 cleanup() {
     log "INFO: Cleaning up and exiting..."
-    # Kill the PHP development server process if it's running
+    # Kill the PHP development server process and all its child processes
     if [[ -n "$server_pid" ]]; then
-        kill "$server_pid"
+        # Kill the PHP server process group
+        kill -- -"$server_pid"
     fi
     exit 0
 }
